@@ -1,4 +1,4 @@
-"""Classes for melon orders."""
+""""Classes for melon orders."""
 
 
 class DomesticMelonOrder:
@@ -45,7 +45,12 @@ class InternationalMelonOrder:
 
         base_price = 5
         total = (1 + self.tax) * self.qty * base_price
-
+        # christmas_base = base_price * 1.5
+        if self.species == "Christmas melon":
+            total = (1 + self.tax) * self.qty * base_price * 1.5
+        if self.order_type == "international" and self.qty < 10: 
+            total += 3
+                    
         return total
 
     def mark_shipped(self):
@@ -57,3 +62,40 @@ class InternationalMelonOrder:
         """Return the country code."""
 
         return self.country_code
+
+class AbstractMelonOrder:
+
+    # order_type = None
+    # tax = 0
+    
+    def __init__(self, species, qty):
+        self.species = species
+        self.qty = qty
+
+class InternationalMelonOrder(AbstractMelonOrder):
+
+    order_type = "international"
+    tax = 0.17
+    
+    def __init__(self, species, qty, country_code):
+        super().__init__(species, qty)
+        self.country_code = country_code
+
+    
+class GovernmentMelonOrder(AbstractMelonOrder):
+    """Create a class GovernmentMelonOrder that inherits from 
+    AbstractMelonOrder. There will be no tax on government orders. 
+    The GovernmentMelonOrder class should include:
+    - a variable passed_inspection which is False until a 
+    successful inspection occurs.
+    - a method mark_inspection(passed) that takes a Boolean input, 
+    passed, and updates whether or not the melon has passed inspection. 
+    This method should update the attribute passed_inspection."""
+
+    def __init__(self, species, qty):
+        super().__init__(species, qty)
+        self.passed_inspection = False
+
+    
+    def mark_inspection(self, passed):
+        self.passed_inspection = passed
